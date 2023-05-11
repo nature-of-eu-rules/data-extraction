@@ -5,9 +5,9 @@
 *.csv
 *.pdf
 *.html
-htmls/*.*
-pdfs/*.*
-problems/*.*
+htmls/*.html
+pdfs/*.pdf
+problems/*.csv
 .DS_Store
 
 # Byte-compiled / optimized / DLL files
