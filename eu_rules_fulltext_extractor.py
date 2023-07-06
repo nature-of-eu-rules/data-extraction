@@ -9,16 +9,45 @@ from bs4 import BeautifulSoup
 import os
 import csv
 import pandas as pd
+import argparse
+import sys
+from os.path import exists
 
-# path_to_celex_file = '[path to CSV file containing celex identifiers]'
-# path_to_extracted_texts_htmls = '[path where to extract HTML documents to]'
-# path_to_extracted_texts_pdfs = '[path where to extract PDF documents to]'
-# path_to_extracted_texts_problems = '[path where to store files with celex identifiers as the filename where we could not find either an HTML or PDF document]'
+def check_out_dir(data_dir):
+    """Check if directory for saving extracted text exists, make directory if not 
 
-path_to_celex_file = 'celex_nums_2.csv'
-path_to_extracted_texts_htmls = 'htmls'
-path_to_extracted_texts_pdfs = 'pdfs'
-path_to_extracted_texts_problems = 'problems'
+        Parameters
+        ----------
+        data_dir: str
+            Output directory path.
+
+    """
+
+    if not os.path.isdir(data_dir):
+        os.makedirs(data_dir)
+        print(f"Created saving directory at {data_dir}")
+
+argParser = argparse.ArgumentParser(description='EURLEX PDF and HTML legislative documents downloader')
+required = argParser.add_argument_group('required arguments')
+required.add_argument("-in", "--input", required=True, help="Path to input CSV file (single column, no header, list of celex identifiers). Find more info about CELEX identifiers here: http://eur-lex.europa.eu/content/help/eurlex-content/celex-number.html")
+required.add_argument("-htp", "--htmlpath", required=True, help="Path to directory where to store the extracted EU legislative documents from EURLEX (http://eur-lex.europa.eu/) in HTML format. Each downloaded document will be named only with the CELEX identifier e.g. 32013R0145.html")
+required.add_argument("-pdp", "--pdfpath", required=True, help="Path to directory where to store the extracted EU legislative documents from EURLEX (http://eur-lex.europa.eu/) in PDF format. Each downloaded document will be named only with the CELEX identifier e.g. 32013R0148.pdf")
+required.add_argument("-prp", "--probpath", required=True, help="Path to a directory. After execution, this script will write a CSV file called 'problematic-celexes.csv' to this directory containing a list of CELEX identifiers for legislation that could not be downloaded for whatever reason")
+
+args = argParser.parse_args()
+
+path_to_celex_file = str(args.input)
+
+if args.input is None:
+     sys.exit('No input file specified. Type "python eu_rules_fulltext_extractor.py -h" for usage help.')
+
+check_out_dir(str(args.htmlpath))
+check_out_dir(str(args.pdfpath))
+check_out_dir(str(args.probpath))
+
+path_to_extracted_texts_htmls = str(args.htmlpath)
+path_to_extracted_texts_pdfs = str(args.pdfpath)
+path_to_extracted_texts_problems = str(args.probpath)
 
 # open the CSV file with celex identifiers for legislation to extract
 file = open(path_to_celex_file, "r")
@@ -48,7 +77,7 @@ def get_list_done_celex():
     dir_list_p = os.listdir(pdf_path)
     dir_list_pr = os.listdir(prob_path)
     
-    if len(dir_list_pr) > 0:
+    if os.path.exists(os.path.join(path_to_extracted_texts_problems, 'problematic-celexes.csv')):
         df_pr = pd.read_csv(os.path.join(path_to_extracted_texts_problems, 'problematic-celexes.csv'))
         result.extend(df_pr['celex'].tolist())
     
@@ -57,9 +86,6 @@ def get_list_done_celex():
 
     for item in dir_list_p:
         result.append(item.replace('.pdf', ''))
-
-    # for item in dir_list_pr:
-    #     result.append(item.replace('.txt', ''))
 
     return result
     
