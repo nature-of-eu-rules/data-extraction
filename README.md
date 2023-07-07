@@ -2,15 +2,14 @@
 
 Data extraction scripts for the [Nature of EU Rules project](https://research-software-directory.org/projects/the-nature-of-eu-rules-strict-and-detailed-or-lacking-bite).
 
-##### Full text extractor
+#### Full text extractor
  Given a list of [CELEX](https://eur-lex.europa.eu/content/help/eurlex-content/celex-number.html) identifiers for EU legislation, the ```eu_rules_fulltext_extractor.py``` script downloads the corresponding documents for the legislation from the [EURLEX](https://eur-lex.europa.eu) website. It stores the files in two folders: one for [HTML](https://www.w3schools.com/html/) documents and one for [PDF](https://docs.fileformat.com/pdf/) documents. Some older documents are only available in PDF format on the website. As a first priority, the script tries to download the HTML version of a document if available (because this format is easier to parse later on). If there is no HTML version available, it extracts the PDF version. If neither the HTML nor PDF versions could be extracted for whatever reason, the script keeps a list of CELEX identifiers which encountered errors when downloading.
 
-##### Metadata extractor
-Given a list of [CELEX](https://eur-lex.europa.eu/content/help/eurlex-content/celex-number.html) identifiers for EU legislation, the ```eu_rules_metadata_extractor.py``` script downloads the [metadata](https://en.wikipedia.org/wiki/Metadata) for the corresponding legislative documents downloaded by ```eu_rules_fulltext_extractor.py```. The metadata is extracted from the [EU publications office's](https://op.europa.eu/en/home) [CELLAR](https://op.europa.eu/documents/10530/676542/ao10463_annex_17_cellar_dissemination_interface_en.pdf) [SPARQL interface](http://publications.europa.eu/webapi/rdf/sparql). If any information is missing in CELLAR, it alternatively tries to scrape the information from the EURLEX webpage for that legislation. The resulting metadata is stored in an output [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file.
+#### Metadata extractor
+Given a list of [CELEX](https://eur-lex.europa.eu/content/help/eurlex-content/celex-number.html) identifiers for EU legislation, the ```eu_rules_metadata_extractor.py``` script downloads the [metadata](https://en.wikipedia.org/wiki/Metadata) for the corresponding legislative documents downloaded by ```eu_rules_fulltext_extractor.py```. The metadata is extracted from the [EU publications office's](https://op.europa.eu/en/home) [CELLAR](https://op.europa.eu/documents/10530/676542/ao10463_annex_17_cellar_dissemination_interface_en.pdf) [SPARQL interface](http://publications.europa.eu/webapi/rdf/sparql). If any information is missing in CELLAR, it alternatively tries to scrape the information from the EURLEX webpage for that legislation. The resulting metadata is stored in an output [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file. Below is a table describing the metadata we extract for this project:
 
-###### List of metadata extracted
 | # | metadata | description | example value | other possible values |
-| --- | ------------- | ------------- | ------------- | ------------- |
+| :---: | :-------------: | :-------------: | :-------------: | :-------------: |
 | 1 | celex  | CELEX identifier for legislation | 32005R0091  | 32019D0001
 | 2 | author | Author of the legislation  | European Commission | European Parliament, Council of European Union |
 | 3 | responsible_boy | EU body or agent responsible for legislation  | DG01/X/00 | SUD./X/00
@@ -24,12 +23,12 @@ Given a list of [CELEX](https://eur-lex.europa.eu/content/help/eurlex-content/ce
 | 11 | eurovoc | [EUROVOC](https://op.europa.eu/en/web/eu-vocabularies) keyword classification or categorisation of this legislation's topics | Union transit, viticulture, wine, beverage industry ,tobacco, administrative cooperation | export (EU), chemical fertiliser, France, inter-company agreement |
 | 12 | subject_matters | EURLEX alternative keyword classification scheme of this legislation's topics  | Competition, Agreements, decisions and concerted practices | Commercial policy, Protective measures |
 
-##### Requirements
+#### Requirements
 + [Python](https://www.python.org/downloads/) 3.9.12+
 + A tool for checking out a [Git](http://git-scm.com/) repository.
 + Input [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file with single column (no header) of [CELEX](https://eur-lex.europa.eu/content/help/eurlex-content/celex-number.html) identifiers for EU legislation
 
-##### Usage steps for ```eu_rules_fulltext_extractor.py```
+#### Usage steps for ```eu_rules_fulltext_extractor.py```
 
 1. Get a copy of the code:
 
@@ -86,7 +85,7 @@ Given a list of [CELEX](https://eur-lex.europa.eu/content/help/eurlex-content/ce
         python eu_rules_fulltext_extractor.py --input path/to/celex_nums.csv --htmlpath path/to/htmls/ --pdfpath path/to/pdfs/ --probpath path/to/problems/
         
 
-##### Usage steps for ```eu_rules_metadata_extractor.py```
+#### Usage steps for ```eu_rules_metadata_extractor.py```
 
 1. Get a copy of the code:
 
