@@ -6,15 +6,6 @@ Website: http://eur-lex.europa.eu/
 """
 
 import csv
-
-# import list of celex numbers of legislation for which to extract metadata
-file = open("celex_nums_2.csv", "r")
-data = list(csv.reader(file, delimiter=","))
-file.close()
-celex_nums = []
-for item in data:
-    celex_nums.append(item[0])
-
 from SPARQLWrapper import SPARQLWrapper, TURTLE, JSON
 from rdflib import Graph, Literal
 import pandas as pd
@@ -23,6 +14,33 @@ import requests
 import json
 import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
+import argparse
+import sys
+from os.path import exists
+
+argParser = argparse.ArgumentParser(description='EURLEX PDF and HTML legislative documents metadata downloader')
+required = argParser.add_argument_group('required arguments')
+required.add_argument("-in", "--input", required=True, help="Path to input CSV file (single column, no header, list of celex identifiers). Find more info about CELEX identifiers here: http://eur-lex.europa.eu/content/help/eurlex-content/celex-number.html")
+required.add_argument("-out", "--output", required=True, help="Path to a CSV file to store the metadata in e.g. 'path/to/metadata.csv'. ")
+
+args = argParser.parse_args()
+
+if args.input is None:
+     sys.exit('No input file specified. Type "python eu_rules_metadata_extractor.py -h" for usage help.')
+
+if args.output is None:
+     sys.exit('No output file specified. Type "python eu_rules_metadata_extractor.py -h" for usage help.')
+
+IN_CELEX_FILE = str(args.input)
+OUT_METADATA_FILE = str(args.output)
+
+# import list of celex numbers of legislation for which to extract metadata
+file = open(IN_CELEX_FILE, "r")
+data = list(csv.reader(file, delimiter=","))
+file.close()
+celex_nums = []
+for item in data:
+    celex_nums.append(item[0])
 
 # Todo: if possible, extract the number of times that a file has been discussed in the Council or its preparatory bodies (under Procedure tab)
 # Todo: if possible, extract the responsible EP committee
@@ -259,7 +277,7 @@ elapsed_time = et - st
 print('Execution time:', elapsed_time, 'seconds')
 
 # saving the results to file: opening the csv file in 'w+' mode
-file = open('metadata.csv', 'w', newline ='')
+file = open(OUT_METADATA_FILE, 'w', newline ='')
 with file:   
     write = csv.writer(file)
     write.writerows(metadata)
