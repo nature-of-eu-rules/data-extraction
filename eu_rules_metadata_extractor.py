@@ -144,9 +144,12 @@ def get_string_label(sparql, uri, pred, celex_num):
         # not the most fine-grained topic of the legislation
         dc_uri_parts = uri.split('/')
         new_dc_uri_parts = dc_uri_parts[:-1]
+        # print('new_dc_uri_parts: ', new_dc_uri_parts)
         dc = dc_uri_parts[-1][:2] # most general part of directory code
+        # print('dc: ', dc)
         new_dc_uri_parts.append(dc)
         uri = '/'.join(new_dc_uri_parts)
+        # print('uri: ', uri)
     
     sparql.setReturnFormat(JSON) # return JSON format response
     query = """ 
@@ -167,6 +170,7 @@ def get_string_label(sparql, uri, pred, celex_num):
     
     # return query results
     val = results["results"]["bindings"][0]["label"]["value"]
+    # print('val: ', val)
     return val
     
 def get_metadata_for_legal_acts(celex_nums, endpoint_url):
@@ -208,8 +212,10 @@ def get_metadata_for_legal_acts(celex_nums, endpoint_url):
     metadata_header_row = ['celex', 'author', 'responsible_body', 'form', 'title', 'addressee', 'date_adoption', 'date_in_force', 'date_end_validity', 'directory_code', 'procedure_code', 'eurovoc', 'subject_matters']
     metadata.append(metadata_header_row)
     idx = 1
+    num_celexes = len(celex_nums)
     for celex_num in celex_nums:
         if (celex_num not in processed_celex) and (celex_num not in ['celex']):
+            print(idx, '/', num_celexes)
             current_row = {
                     "celex"                 : [],
                     "author"                : [],

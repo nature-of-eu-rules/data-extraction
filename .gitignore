@@ -1,6 +1,6 @@
 # gitignore
 .gitignore
-
+exenv/
 # data
 *.csv
 *.pdf
