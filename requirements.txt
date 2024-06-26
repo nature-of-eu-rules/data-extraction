@@ -2,6 +2,7 @@ sparqlwrapper==2.0.0
 requests==2.30.0
 beautifulsoup4==4.12.2
 pandas==2.0.1
+numpy==1.26.4
 html5lib==1.1
 html5
 lxml
