@@ -50,7 +50,7 @@ path_to_extracted_texts_pdfs = str(args.pdfpath)
 path_to_extracted_texts_problems = str(args.probpath)
 
 # open the CSV file with celex identifiers for legislation to extract
-file = open(path_to_celex_file, "r")
+file = open(path_to_celex_file, "r", encoding='utf-8')
 data = list(csv.reader(file, delimiter=","))
 file.close()
 celex_nums = []
@@ -98,7 +98,7 @@ celex_nums = [x for x in celex_nums if x not in s]
 problematic_celexes = []
 for celex in celex_nums:
     r = requests.get(reg_fulltext_base_url.format(celex))                                                                                                                                               # try to get HTML webpage for legislation
-    soup = BeautifulSoup(r.content, 'lxml')                                                                                                                                                         # parse the webpage with BeautifulSoup's HTML5lib parser
+    soup = BeautifulSoup(r.content, 'lxml-xml')                                                                                                                                                         # parse the webpage with BeautifulSoup's HTML5lib parser
     if "The requested document does not exist." in soup.prettify():                                                                                                                                     # if the page has this message then there is no HTML webpage for this celex number on EURLEX
         r = requests.get(pdf_base_url.format(celex))                                                                                                                                                    # now try to get the PDF version of the legislation
         content_type = r.headers.get('content-type')                                                                                                                                                    # get the mime type of file (hopefully 'application/pdf')
@@ -111,7 +111,7 @@ for celex in celex_nums:
             problematic_celexes.append(celex)                                                                                                                                                           # append to list of problematic celexes (no HTML or PDF present)
     else:
         suffix = celex+'.html' if path_to_extracted_texts_htmls[-1] == os.path.sep else os.path.join(os.path.join(path_to_extracted_texts_htmls, os.path.sep), celex+'.html')                           # suffix if path to file has slash or not
-        with open(path_to_extracted_texts_htmls + suffix, 'w') as f:                                                                                                                                    # write the file to disk       
+        with open(path_to_extracted_texts_htmls + suffix, 'w', encoding="utf-8") as f:                                                                                                                                    # write the file to disk       
             f.write(str(soup.prettify()))
 
 # write list of problematic celexes to file

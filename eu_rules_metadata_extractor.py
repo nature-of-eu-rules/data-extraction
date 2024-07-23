@@ -35,7 +35,7 @@ IN_CELEX_FILE = str(args.input)
 OUT_METADATA_FILE = str(args.output)
 
 # import list of celex numbers of legislation for which to extract metadata
-file = open(IN_CELEX_FILE, "r")
+file = open(IN_CELEX_FILE, "r", encoding='utf-8')
 data = list(csv.reader(file, delimiter=","))
 file.close()
 celex_nums = []
@@ -84,7 +84,7 @@ def get_title(celex):
         return ''
       
     if r is not None:  
-        soup = BeautifulSoup(r.content, 'html5lib')
+        soup = BeautifulSoup(r.content, 'lxml-xml')
         res = soup.find('meta', attrs={"property" : "eli:title", "lang" : "en"})
         if res:
             return res.get('content')
@@ -283,7 +283,7 @@ elapsed_time = et - st
 print('Execution time:', elapsed_time, 'seconds')
 
 # saving the results to file: opening the csv file in 'w+' mode
-file = open(OUT_METADATA_FILE, 'w', newline ='')
+file = open(OUT_METADATA_FILE, 'w', newline ='', encoding='utf-8')
 with file:   
     write = csv.writer(file)
     write.writerows(metadata)
